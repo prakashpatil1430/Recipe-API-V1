@@ -1,0 +1,51 @@
+# base python light weight image
+FROM python:3.9-alpine3.13
+
+# label name for maintainer
+LABEL maintainer="prakash-patil"
+
+# to avoid unbuffering of python result it give direct result in console, help to get log reports
+ENV PYTHONUNBUFFERED 1
+
+# Docker using this dir as a working dir
+WORKDIR /app
+
+# copying req.txt to inside docker dir : /tmp/req.txt
+COPY ./requirements.txt /tmp/requirements.txt
+
+# coping everything current dir(files and all) to inside docker directory /app
+COPY ./app /app
+
+# running port
+EXPOSE 8000
+
+# creating virtualenvironment inside docker
+# upgrading pip
+# installing dependencies
+# removing /tmp directory after installing dependencies usefull for make docker image light
+# adding custom user to run docker, safe way to use custom user rather than root user
+RUN python -m venv /apivenv && \
+    /apivenv/bin/pip install --upgrade pip && \
+    /apivenv/bin/pip install -r /tmp/requirements.txt && \
+    rm -rf /tmp && \
+    adduser \
+    --disabled-password \
+    --no-create-home \
+    django-user
+
+# activating virtualenvironment
+ENV PATH="/apivenv/bin:$PATH"
+
+# use of custom user
+USER django-user
+
+# Run your command here
+CMD ["sh", "-c", "python manage.py runserver 0.0.0.0:8000"]
+
+
+
+# to run a flake8 use this command " here django is a serviece name"
+docker compose run --rm django sh -c 'flake8'
+
+to create a project
+docker compose run --rm django sh -c 'django-admin startproject app .'
