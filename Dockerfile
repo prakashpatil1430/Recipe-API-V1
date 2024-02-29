@@ -19,10 +19,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 ARG DEV=false
 
 RUN /opt/venv/bin/pip install --upgrade pip && \
-    /opt/venv/bin/pip install -r /tmp/requirements.txt && \
-    apk add --update --no-cache postgresql-client jpeg-dev && \
+    apk add --update --no-cache postgresql-client && \
     apk add --update --no-cache --virtual .tmp-build-deps \
-        build-base postgresql-dev musl-dev zlib zlib-dev linux-headers && \
+            build-base postgresql-dev musl-dev && \
+    /opt/venv/bin/pip install -r /tmp/requirements.txt && \
     if [ $DEV = "true" ]; \
         then /opt/venv/bin/pip install -r /tmp/requirements.dev.txt ; \
     fi && \
