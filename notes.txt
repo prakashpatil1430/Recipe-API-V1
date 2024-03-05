@@ -1,0 +1,26 @@
+# get_user_model : to get default user model from django.contrib.auth
+#in testcase user.check_password used check the hased password
+
+
+
+
+
+# commmand
+
+docker compose run --rm django sh -c  "python manage.py test"
+docker compose run --rm django sh -c  "python manage.py makemigrations"
+docker compose run --rm django sh -c  "python manage.py wait_for_db"
+docker compose run --rm django sh -c  "python manage.py migrate"
+
+docker compose down
+docker volume ls
+docker volume rm recipe-api-v1_dev-db-data
+docker volume ls
+docker compose run --rm django sh -c "python manage.py wait_for_db && python manage.py migrate"
+
+docker compose up
+
+docker compose run --rm django sh -c "python manage.py createsuperuser"
+docker compose run --rm django sh -c "flake8"
+
+docker-compose up -d --build
